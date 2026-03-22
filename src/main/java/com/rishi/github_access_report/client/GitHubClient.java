@@ -5,7 +5,6 @@ import com.rishi.github_access_report.dto.GitHubMemberResponse;
 import com.rishi.github_access_report.dto.GitHubRepoResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,7 +34,7 @@ public class GitHubClient {
 
 
     public List<GitHubMemberResponse> fetchCollaborators(String fullName, int page) {
-        String uri = UriComponentsBuilder.fromPath(("/repos/{owner}/{repo}/collaborators"))
+        String uri = UriComponentsBuilder.fromPath(("/repos/{fullName}/collaborators"))
                 .queryParam("page", page)
                 .queryParam("per_page", 100)
                 .buildAndExpand(fullName)
