@@ -4,11 +4,12 @@ package com.rishi.github_access_report.service;
 import com.rishi.github_access_report.client.GitHubClient;
 import com.rishi.github_access_report.dto.GitHubMemberResponse;
 import com.rishi.github_access_report.dto.GitHubRepoResponse;
-import org.springframework.stereotype.Repository;
+import com.rishi.github_access_report.dto.UserAccessReportDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -29,7 +30,11 @@ public class ReportService {
                         List<GitHubMemberResponse> collaborators = gitHubClient.fetchCollaborators(repo.fullName(), 1);
 
                         return collaborators.stream()
-                                .map(c -> new UserRepoMapping(c.login(), c.avatarUrl(), repo.name(), determineRole(c.permissions())))
+                                .map(c -> new UserRepoMapping(
+                                        c.login(),
+                                        c.avatarUrl(),
+                                        repo.name(),
+                                        determineRole(c.permissions())))
                                 .toList();
                     }))
                     .toList();
@@ -39,6 +44,27 @@ public class ReportService {
                     .flatMap(List::stream)
                     .toList();
     }
+
+    public List<UserAccessReportDTO> getAggregatedReport(String org) {
+
+        List<UserRepoMapping> flatMappings = generateReport(org);
+
+        return flatMappings.stream()
+                .collect(Collectors.groupingBy(
+                       UserRepoMapping::username,
+                        Collectors.collectingAndThen(Collectors.toList(), list -> {
+                            String avatarUrl = list.get(0).avatarUrl();
+                            List<UserAccessReportDTO.RepositoryAccessDetails> repos = list.stream()
+                                    .map(m -> new UserAccessReportDTO.RepositoryAccessDetails(m.RepoName(), m.role()))
+                                    .toList();
+                            return new UserAccessReportDTO(list.get(0).username(), avatarUrl, repos);
+                        })
+                ))
+                .values()
+                .stream()
+                .toList();
+    }
+
 
     private String determineRole(java.util.Map<String, Boolean> permissions) {
         if(Boolean.TRUE.equals(permissions.get("admin"))) return "ADMIN";
