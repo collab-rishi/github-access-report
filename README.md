@@ -20,7 +20,7 @@ A high-performance Spring Boot service designed to aggregate user access permiss
 1. Clone the repository:
 
    ```
-   git clone <your-repo-url>
+   git clone https://github.com/collab-rishi/github-access-report.git
    cd github-access-report
    ```
    
