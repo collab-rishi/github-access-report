@@ -55,7 +55,7 @@ public class ReportService {
                         Collectors.collectingAndThen(Collectors.toList(), list -> {
                             String avatarUrl = list.get(0).avatarUrl();
                             List<UserAccessReportDTO.RepositoryAccessDetails> repos = list.stream()
-                                    .map(m -> new UserAccessReportDTO.RepositoryAccessDetails(m.RepoName(), m.role()))
+                                    .map(m -> new UserAccessReportDTO.RepositoryAccessDetails(m.repoName(), m.role()))
                                     .toList();
                             return new UserAccessReportDTO(list.get(0).username(), avatarUrl, repos);
                         })
@@ -72,7 +72,7 @@ public class ReportService {
         return "READ";
     }
 
-    public record UserRepoMapping(String username, String avatarUrl, String RepoName, String role){}
+    public record UserRepoMapping(String username, String avatarUrl, String repoName, String role){}
 
 
 }

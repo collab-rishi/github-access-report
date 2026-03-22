@@ -12,7 +12,7 @@ public class GitHubClientConfig {
     public RestClient githubRestClient(GitHubProperties props) {
         return RestClient.builder()
                 .baseUrl(props.getBaseUrl())
-                .defaultHeader("Authorization", "Bearer" + props.getToken())
+                .defaultHeader("Authorization", "Bearer " + props.getToken())
                 .defaultHeader("Accept", "application/vnd.github+json")
                 .build();
     }

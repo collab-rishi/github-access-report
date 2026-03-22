@@ -20,7 +20,7 @@ public class GitHubClient {
     }
 
     public List<GitHubRepoResponse> fetchRepositories(String org, int page) {
-        String uri = UriComponentsBuilder.fromPath(("/orgs/{org}/repos"))
+        String uri = UriComponentsBuilder.fromPath("/orgs/{org}/repos")
                 .queryParam("page", page)
                 .queryParam("per_page", 100)
                 .buildAndExpand(org)
